@@ -3,18 +3,19 @@
 #include <stdlib.h>
 #include <math.h>
 #include "../fw/math.h"
+#include "../fw/musys_libc.h"
 
 static void fx_dot_tunnel_init_ringDots(fx_dot_tunnel *dotTunnel) {
     for (int j=0; j<dotTunnel->numDotsPerRing; j++) {
         float k = j * M_PI * 2.f / dotTunnel->numDotsPerRing;
         dotTunnel->ringDots[j] = (fw_vec3f) {
-            dotTunnel->radiusX * sinf(k), dotTunnel->radiusY * cosf(k), 0
+            dotTunnel->radiusX * musys_sinf(k), dotTunnel->radiusY * musys_cosf(k), 0
         };
     }
 }
 
 fx_dot_tunnel_dot_color *fx_dot_tunnel_createColorsDefault(int numDotsPerRing) {
-    fx_dot_tunnel_dot_color *dotColors = calloc(numDotsPerRing, sizeof(fx_dot_tunnel_dot_color));
+    fx_dot_tunnel_dot_color *dotColors = musys_calloc(numDotsPerRing, sizeof(fx_dot_tunnel_dot_color));
 
     for (int i=0; i<numDotsPerRing; i++) {
         dotColors[i].isCullable = 1;
@@ -73,8 +74,8 @@ void fx_dot_tunnel_init(fx_dot_tunnel *dotTunnel, int numRings, int numDotsPerRi
     dotTunnel->maxDistance = numRings * ringDistance;
     dotTunnel->radiusX = radiusX;
     dotTunnel->radiusY = radiusY;
-    dotTunnel->ringCenters = calloc(numRings, sizeof(fw_vec3f));
-    dotTunnel->ringDots = calloc(numDotsPerRing, sizeof(fw_vec3f));
+    dotTunnel->ringCenters = musys_calloc(numRings, sizeof(fw_vec3f));
+    dotTunnel->ringDots = musys_calloc(numDotsPerRing, sizeof(fw_vec3f));
     dotTunnel->dotColors = fx_dot_tunnel_createColorsDefault(numDotsPerRing);
 
     dotTunnel->eyeIdx = 0;
@@ -92,8 +93,8 @@ void fx_dot_tunnel_update(fx_dot_tunnel *dotTunnel, float tunnelSpeed, float eye
             dotTunnel->eyeIdx = (i+1) % dotTunnel->numRings;
             dotTunnel->targetIdx = (dotTunnel->eyeIdx + 48) % dotTunnel->numRings;
 
-            dotTunnel->ringCenters[i].x = amp->x * sinf(time->elapsed);
-            dotTunnel->ringCenters[i].y = amp->y * sinf(1.5f * time->elapsed);
+            dotTunnel->ringCenters[i].x = amp->x * musys_sinf(time->elapsed);
+            dotTunnel->ringCenters[i].y = amp->y * musys_sinf(1.5f * time->elapsed);
             dotTunnel->ringCenters[i].z -= dotTunnel->maxDistance;
         }
     }
@@ -176,7 +177,7 @@ static void fx_dot_tunnel_renderRings(fx_dot_tunnel *dotTunnel) {
 
 void fx_dot_tunnel_render(fx_dot_tunnel *dotTunnel, fw_timer_data *time) {
     glPushMatrix();
-    glRotatef(180*sinf(.2f*time->elapsed), 0,0,1);
+    glRotatef(180*musys_sinf(.2f*time->elapsed), 0,0,1);
 
     gluLookAt(dotTunnel->eye.x, dotTunnel->eye.y, dotTunnel->eye.z, dotTunnel->target.x,dotTunnel->target.y,dotTunnel->target.z, 0,1,0);
 

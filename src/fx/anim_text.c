@@ -1,5 +1,6 @@
 #include "anim_text.h"
 #include "../fw/projection.h"
+#include "../fw/musys_libc.h"
 
 static void fx_anim_text_renderGlyph(fw_font_glyph *glyph, int x, int y, fx_anim_text_modifier *modifier, fw_vec3f *color) {
     int left = x + glyph->xoffset;
@@ -46,7 +47,7 @@ static void fx_anim_text_renderLine(const char string[], fw_font_face *fontFace,
     int xadvanceTotal = 0;
     fw_font_glyph *glyph;
 
-    for (int i=0; i<strlen(string); i++) {
+    for (int i=0; i<musys_strlen(string); i++) {
         glyph = &fontFace->glyphs[(unsigned char)string[i]];
 
         if (string[i] != ' ') {
@@ -82,10 +83,10 @@ void fx_anim_text_render(fx_anim_text_meta *meta, fw_font_face *fontFace, float 
 
 void fx_anim_text_init_meta(fx_anim_text_meta *meta) {
     int numChars = 0;
-    meta->modifiers = calloc(meta->numLines, sizeof(fx_anim_text_modifier*));
+    meta->modifiers = musys_calloc(meta->numLines, sizeof(fx_anim_text_modifier*));
     for (int i=0; i<meta->numLines; i++) {
-        int lineLength = strlen(meta->strings[i]);
-        meta->modifiers[i] = calloc(lineLength, sizeof(fx_anim_text_modifier));
+        int lineLength = musys_strlen(meta->strings[i]);
+        meta->modifiers[i] = musys_calloc(lineLength, sizeof(fx_anim_text_modifier));
         numChars += lineLength;
         for (int j=0; j<lineLength; j++) {
             meta->modifiers[i][j].scale.x=1;
@@ -96,14 +97,14 @@ void fx_anim_text_init_meta(fx_anim_text_meta *meta) {
 
     // Create empty keyframes.
     int numKeys = meta->numKeysPerChar * numChars;
-    meta->keys = calloc(numKeys, sizeof(fw_keyframe));
+    meta->keys = musys_calloc(numKeys, sizeof(fw_keyframe));
     meta->numKeys = numKeys;
 
     // Init keyframes with function pointer callback.
     int totalKeyIdx=0;
     int totalCharIdx=0;
     for (int i=0; i<meta->numLines; i++) {
-        int lineLength = strlen(meta->strings[i]);
+        int lineLength = musys_strlen(meta->strings[i]);
         for (int j=0; j<lineLength; j++) {
             for (int k=0; k<meta->numKeysPerChar; k++) {
                 meta->keys[totalKeyIdx] = meta->createKey(meta, k, totalKeyIdx, totalCharIdx, i, j);
@@ -116,7 +117,7 @@ void fx_anim_text_init_meta(fx_anim_text_meta *meta) {
 
 void fx_anim_text_setDefaultColor(fx_anim_text_meta *meta, fw_vec4f color) {
     for (int i=0; i<meta->numLines; i++) {
-        int lineLength = strlen(meta->strings[i]);
+        int lineLength = musys_strlen(meta->strings[i]);
         for (int j=0; j<lineLength; j++) {
             meta->modifiers[i][j].color = color;
         }
@@ -126,7 +127,7 @@ void fx_anim_text_setDefaultColor(fx_anim_text_meta *meta, fw_vec4f color) {
 void colorizeChars(fx_anim_text_meta *meta, int line, int charFrom, int charTo, fw_vec4f color) {
     int keyIdx = 0;
     for (int i=0; i<meta->numLines; i++) {
-        for (int j=0; j<strlen(meta->strings[i]); j++) {
+        for (int j=0; j<musys_strlen(meta->strings[i]); j++) {
 
             // Modify keyframe of the given line and its characters from `charFrom` to `charTo` (zero-based).
             if (i==line && j >= charFrom && j<=charTo) {

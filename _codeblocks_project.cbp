@@ -25,17 +25,21 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-nostdlib" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-fno-builtin -ffreestanding" />
 		</Compiler>
 		<Linker>
 			<Add library="opengl32" />
 			<Add library="glu32" />
 			<Add library="gdi32" />
-			<Add library="D:/projects/codeblocks/_lib/winmm-7.1a-win32/WinMM.Lib" />
+			<Add library="winmm" />
+			<Add library="user32" />
+			<Add library="kernel32" />
 		</Linker>
 		<Unit filename="src/client.c">
 			<Option compilerVar="CC" />
@@ -76,6 +80,7 @@
 		<Unit filename="src/fw/easing.h" />
 		<Unit filename="src/fw/file.c">
 			<Option compilerVar="CC" />
+			<Option target="Debug" />
 		</Unit>
 		<Unit filename="src/fw/file.h" />
 		<Unit filename="src/fw/font.c">
@@ -105,6 +110,11 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/fw/micromod.h" />
+		<Unit filename="src/fw/musys_libc.c">
+			<Option compilerVar="CC" />
+			<Option compiler="gcc" use="0" buildCommand="-fno-lto" />
+		</Unit>
+		<Unit filename="src/fw/musys_libc.h" />
 		<Unit filename="src/fw/pixels.c">
 			<Option compilerVar="CC" />
 		</Unit>

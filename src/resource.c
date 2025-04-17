@@ -19,6 +19,7 @@
 #include "dat/mountains_pixels.h"
 #include "dat/font_pixels.h"
 #include "dat/font_meta.h"
+#include "fw/musys_libc.h"
 
 static fw_image _images[IMAGES_ENUM_SIZE];
 static fw_sprite_image _spriteImages[SPRITE_IMAGES_ENUM_SIZE];
@@ -28,22 +29,22 @@ static void generateImages(void) {
     int w, h, bpp=4;
     unsigned char *buffer;
 
-    w = 97, h = 97, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 97, h = 97, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_circle(48,48,48, &color, buffer, w, h, bpp);
     fw_draw_fill(48,48, &color, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_PARALLAX_LAYER_1], w, h, buffer);
 
-    w = 65, h = 65, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 65, h = 65, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_circle(32,32,32, &color, buffer, w, h, bpp);
     fw_draw_fill(32,32, &color, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_PARALLAX_LAYER_2], w, h, buffer);
 
-    w = 33, h = 33, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 33, h = 33, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_circle(16,16,16, &color, buffer, w, h, bpp);
     fw_draw_fill(16,16, &color, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_PARALLAX_LAYER_3], w, h, buffer);
 
-    w = 32, h = 32, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 32, h = 32, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_line(16,0,16,32,&color, buffer, w, h, bpp);
     fw_draw_fill(0,0, &color, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_STRIPE], w, h, buffer);
@@ -52,7 +53,7 @@ static void generateImages(void) {
     color = (fw_vec4i) {
         240,240,240,255
     };
-    w = 64, h = 64, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 64, h = 64, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
 
     fw_draw_fill_box(0,0,w/2-1,h/2-1, &color, buffer, w, h, bpp);
     fw_draw_fill_box(w/2,h/2,w-1,h-1, &color, buffer, w, h, bpp);
@@ -79,7 +80,7 @@ static void generateImages(void) {
     color = (fw_vec4i) {
         240,240,240,255
     };
-    w = 128, h = 128, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 128, h = 128, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_circle(32,32,8, &color, buffer, w, h, bpp);
     fw_draw_fill(32,32, &color, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_CHECKER_DOT], w, h, buffer);
@@ -88,7 +89,7 @@ static void generateImages(void) {
     color = (fw_vec4i) {
         255,255,255,255
     };
-    w = 32, h = 32, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 32, h = 32, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_circle(16,16,15, &color, buffer, w, h, bpp);
     fw_draw_fill(16,16, &color, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_MOUNTAINS_SUN], w, h, buffer);
@@ -97,7 +98,7 @@ static void generateImages(void) {
     color = (fw_vec4i) {
         255,255,255,255
     };
-    w = 128, h = 128, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 128, h = 128, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_circle(64,64,63, &color, buffer, w, h, bpp);
     fw_draw_fill(64,64, &color, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_CIRCLE_FILLED], w, h, buffer);
@@ -106,7 +107,7 @@ static void generateImages(void) {
     color = (fw_vec4i) {
         255,255,255,255
     };
-    w = 16, h = 16, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 16, h = 16, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_line(8,1,1,4,&color, buffer, w, h, bpp);
     fw_draw_line(1,4,1,11,&color, buffer, w, h, bpp);
     fw_draw_line(1,11,8,14,&color, buffer, w, h, bpp);
@@ -119,7 +120,7 @@ static void generateImages(void) {
 
 
     // Ground gradient.
-    w = 128, h = 128, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 128, h = 128, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     const int numSteps=8;
     const int lineWidth=8;
     int y=0;
@@ -134,7 +135,7 @@ static void generateImages(void) {
     fw_image_initRGBA(&_images[RES_IMG_GRADIENT_GROUND], w, h, buffer);
 
     // Greetings gradient.
-    w = 16, h = 16, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 16, h = 16, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     for (int i=0; i<h/2; i++) {
         int v = 255-i*255/h;
         fw_vec4i c = {v,v,v,255};
@@ -158,7 +159,7 @@ static void generateImages(void) {
         {117,23,76,255},
         {124,24,78,255},
     };
-    w = 1, h = 270, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 1, h = 270, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
 
     const int palSize = LEN(pal);
     const int gradHeight = 24;
@@ -179,22 +180,22 @@ static void generateImages(void) {
     fw_image_initRGBA(&_images[RES_IMG_GRADIENT_TUNNEL], w, h, buffer);
 
     // Bounce spheres ground flash gradient.
-    w = 512, h = 128, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = 512, h = 128, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_draw_gradient_oval(buffer, w,h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_BOUNCE_SPHERES_FLASH], w, h, buffer);
 
     // White mask for title logo.
-    w = TITLE_PIXELS_WIDTH, h = TITLE_PIXELS_HEIGHT, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = TITLE_PIXELS_WIDTH, h = TITLE_PIXELS_HEIGHT, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_pixels_createMask(_titlePixels, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_TITLE_MASK], w, h, buffer);
 
     // White mask for title logo top part.
-    w = TITLE_PIXELS_2_WIDTH, h = TITLE_PIXELS_2_HEIGHT, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = TITLE_PIXELS_2_WIDTH, h = TITLE_PIXELS_2_HEIGHT, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_pixels_createMask(_titlePixels2, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_TITLE_2_MASK], w, h, buffer);
 
     // White mask for title logo bottom part.
-    w = TITLE_PIXELS_3_WIDTH, h = TITLE_PIXELS_3_HEIGHT, buffer = calloc(w*h*4, sizeof(unsigned char));
+    w = TITLE_PIXELS_3_WIDTH, h = TITLE_PIXELS_3_HEIGHT, buffer = musys_calloc(w*h*4, sizeof(unsigned char));
     fw_pixels_createMask(_titlePixels3, buffer, w, h, bpp);
     fw_image_initRGBA(&_images[RES_IMG_TITLE_3_MASK], w, h, buffer);
 }

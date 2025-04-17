@@ -1,6 +1,7 @@
 #include "endless_grid.h"
 #include <math.h>
 #include "../fw/quad.h"
+#include "../fw/musys_libc.h"
 
 #define NUM_CHECKER_PLANES 50
 #define CHECKER_PLANES_DIST .03f
@@ -75,9 +76,9 @@ void fx_endless_grid_render(GLuint textureID, char isMonochrome, unsigned char a
                     glColor4ub(_checkerPlanes[i].color.x, _checkerPlanes[i].color.y, _checkerPlanes[i].color.z, alpha);
                 }
                 glTranslatef(_checkerPlanes[i].pos.x, _checkerPlanes[i].pos.y, _checkerPlanes[i].pos.z);
-                glRotatef(180*sinf(time->elapsed*.25) + 30*cosf(time->elapsed*.5), 0,0,1);
+                glRotatef(180*musys_sinf(time->elapsed*.25) + 30*musys_cosf(time->elapsed*.5), 0,0,1);
                 glScalef(.5,.5,1);
-                fw_quad_putTextured(32,0.25  + 1.2*sinf(time->elapsed*M_PI*.5f*.5), 32,-0.25);
+                fw_quad_putTextured(32,0.25  + 1.2*musys_sinf(time->elapsed*M_PI*.5f*.5), 32,-0.25);
             }
             glPopMatrix();
         }

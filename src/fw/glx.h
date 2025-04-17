@@ -10,6 +10,6 @@ void fw_glx_init();
 
 // Copied from <GL/glext.h>
 typedef void (APIENTRYP PFNGLBLENDFUNCSEPARATEPROC) (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha);
-PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate;
+static PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate;
 
 #endif

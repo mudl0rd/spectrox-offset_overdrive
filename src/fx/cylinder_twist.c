@@ -2,7 +2,7 @@
 #include <GL/glu.h>
 #include <math.h>
 #include "../config/config.h"
-
+#include "../fw/musys_libc.h"
 #define SCISSOR_HEIGHT 2
 #define CYLINDER_HEIGHT 6.4
 
@@ -94,7 +94,7 @@ void fx_cylinder_twist_render(fx_cylinder_params *params, fw_timer_data *time) {
     glTranslatef(.2f,-.2f,0);
     for (int i=0; i<FW_RENDER_HEIGHT; i+=SCISSOR_HEIGHT) {
         glScissor(0,i,FW_RENDER_WIDTH,SCISSOR_HEIGHT);
-        fx_cylinder_twist_putCylinders(sinf(CYLINDER_ROTATION_OFFSET+time->elapsed + i*params->twistVariance) * 360, params, 1);
+        fx_cylinder_twist_putCylinders(musys_sinf(CYLINDER_ROTATION_OFFSET+time->elapsed + i*params->twistVariance) * 360, params, 1);
     }
     glPopMatrix();
 
@@ -103,7 +103,7 @@ void fx_cylinder_twist_render(fx_cylinder_params *params, fw_timer_data *time) {
     glEnable(GL_DEPTH_TEST);
     for (int i=0; i<FW_RENDER_HEIGHT; i+=SCISSOR_HEIGHT) {
         glScissor(0,i,FW_RENDER_WIDTH,SCISSOR_HEIGHT);
-        fx_cylinder_twist_putCylinders(sinf(CYLINDER_ROTATION_OFFSET+time->elapsed + i*params->twistVariance) * 360, params, 0);
+        fx_cylinder_twist_putCylinders(musys_sinf(CYLINDER_ROTATION_OFFSET+time->elapsed + i*params->twistVariance) * 360, params, 0);
     }
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);

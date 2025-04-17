@@ -6,6 +6,7 @@
 #include "render.h"
 #include "broadcast.h"
 #include "../client.h"
+#include "../fw/musys_libc.h"
 
 LRESULT CALLBACK fw_windowProc(HWND, UINT, WPARAM, LPARAM);
 void fw_registerClass(HINSTANCE);
@@ -116,12 +117,13 @@ void fw_registerClass(HINSTANCE hInstance) {
     wcex.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
     if (!RegisterClassEx(&wcex)) {
-        exit(1);
+        ExitProcess(0);
     }
 }
 
 static void fw_changeDisplaySettings(int width, int height) {
-    DEVMODE dm = {0};
+    DEVMODE dm;
+    musys_memset(&dm,0,sizeof(DEVMODE));
     dm.dmSize = sizeof(dm);
     dm.dmPelsWidth = width;
     dm.dmPelsHeight = height;
@@ -129,7 +131,7 @@ static void fw_changeDisplaySettings(int width, int height) {
     dm.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
     if (ChangeDisplaySettings (&dm, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
-        exit(44001);
+        ExitProcess(44001);
     }
 }
 
@@ -172,7 +174,7 @@ HGLRC fw_setupOpenGLContext(HWND hWnd) {
 
 void fw_setPixelFormat(HDC hDC) {
     PIXELFORMATDESCRIPTOR pfd;
-    ZeroMemory(&pfd, sizeof(pfd));
+    musys_memset(&pfd,0,sizeof(PIXELFORMATDESCRIPTOR));
     pfd.nSize = sizeof(pfd);
     pfd.nVersion = 1;
     pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
@@ -195,7 +197,7 @@ RECT fw_getDesktopRect() {
 }
 
 RECT fw_getOutputRect() {
-    RECT outputRect = {0, 0, FW_WINDOW_WIDTH, FW_WINDOW_HEIGHT};
+    RECT outputRect= {0, 0, FW_WINDOW_WIDTH, FW_WINDOW_HEIGHT};
 
     // Windowsed.
     if (!FW_IS_FULLSCREEN_ENABLED) {

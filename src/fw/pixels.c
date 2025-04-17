@@ -1,8 +1,9 @@
 #include "pixels.h"
 #include <string.h>
+#include "musys_libc.h"
 
 void fw_pixels_clear(unsigned char *pixels, int width, int height, int bpp) {
-    memset(pixels, 0, width * height * bpp);
+    musys_memset(pixels, 0, width * height * bpp);
 }
 
 void fw_pixels_blit(unsigned char *src, int srcWidth, int srcHeight,
@@ -19,7 +20,7 @@ void fw_pixels_blit(unsigned char *src, int srcWidth, int srcHeight,
             && srcRegionHeight == srcHeight
             && dstOffsetX == 0
             && dstOffsetY == 0) {
-        memcpy(dst, src, srcWidth * srcHeight * bpp);
+        musys_memcpy(dst, src, srcWidth * srcHeight * bpp);
         return;
     }
 

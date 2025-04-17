@@ -1,5 +1,6 @@
 #include "draw.h"
 #include <math.h>
+#include "musys_libc.h"
 
 
 void fw_draw_pixel(int x, int y, fw_vec4i *color, unsigned char *pixels, int width, int height, int bpp) {
@@ -97,8 +98,8 @@ void fw_draw_circle(int cx, int cy, int radius, fw_vec4i *color, unsigned char *
  * FROM https://gist.github.com/bert/1085538
  */
 void fw_draw_line(int x0, int y0, int x1, int y1, fw_vec4i *color, unsigned char *pixels, int width, int height, int bpp) {
-    int dx =  abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-    int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    int dx =  musys_fabsf(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    int dy = -musys_fabsf(y1 - y0), sy = y0 < y1 ? 1 : -1;
     int err = dx + dy, e2;
 
     for (;;) {
@@ -130,7 +131,7 @@ void fw_draw_gradient_oval(unsigned char *pixels, int width, int height, int bpp
 
             float distanceX = (float)(x - centerX) / radiusX;
             float distanceY = (float)(y - centerY) / radiusY;
-            float distance = sqrt(distanceX * distanceX + distanceY * distanceY);
+            float distance = musys_sqrtf(distanceX * distanceX + distanceY * distanceY);
 
             if (distance <= 1.0) {
                 // Normalize distance to [0, 1], with 0 at the center and 1 at the edge

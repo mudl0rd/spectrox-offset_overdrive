@@ -1,7 +1,7 @@
 #include "font.h"
 #include "../config/config.h"
 #include "projection.h"
-
+#include "musys_libc.h"
 void fw_font_initFontFace(fw_font_face *fontFace, fw_image *image) {
     fontFace->image = image;
     for (int i=0; i<fontFace->numGlyphs; i++) {
@@ -17,7 +17,7 @@ int fw_font_calcLineWidth(const char string[], fw_font_face *fontFace) {
     int xadvanceTotal = 0;
     fw_font_glyph *glyph;
 
-    for (int i=0; i<strlen(string); i++) {
+    for (int i=0; i<musys_strlen(string); i++) {
         glyph = &fontFace->glyphs[(unsigned char)string[i]];
         xadvanceTotal += glyph->xadvance;
     }
@@ -48,7 +48,7 @@ static void fw_font_renderTextLine(const char string[], fw_font_face *fontFace, 
     int xadvanceTotal = 0;
     fw_font_glyph *glyph;
 
-    for (int i=0; i<strlen(string); i++) {
+    for (int i=0; i<musys_strlen(string); i++) {
 
         if ( (i + numCharsProcessed)/(float)totalChars >= completion) {
             return;
@@ -63,13 +63,13 @@ static void fw_font_renderTextLine(const char string[], fw_font_face *fontFace, 
 static void fw_font_renderTextLines(char *strings[], int numLines, fw_font_face *fontFace, int x, int y, float completion) {
     int totalChars = 0;
     for (int i=0; i<numLines; i++) {
-        totalChars += strlen(strings[i]);
+        totalChars += musys_strlen(strings[i]);
     }
 
     int numCharsProcessed = 0;
     for (int i=0; i<numLines; i++) {
         fw_font_renderTextLine(strings[i], fontFace, x, y + i * fontFace->lineHeight, numCharsProcessed, totalChars, completion);
-        numCharsProcessed += strlen(strings[i]);
+        numCharsProcessed += musys_strlen(strings[i]);
     }
 }
 
@@ -89,7 +89,7 @@ void fw_font_renderSingleTextLine(const char string[], fw_font_face *fontFace, i
     int xadvanceTotal = 0;
     fw_font_glyph *glyph;
 
-    for (int i=0; i<strlen(string); i++) {
+    for (int i=0; i<musys_strlen(string); i++) {
         glyph = &fontFace->glyphs[(unsigned char)string[i]];
         fw_font_renderGlyph(glyph, x+xadvanceTotal, y);
         xadvanceTotal += glyph->xadvance;

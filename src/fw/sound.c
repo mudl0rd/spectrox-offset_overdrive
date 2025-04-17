@@ -1,5 +1,6 @@
 #include "sound.h"
 #include <windows.h>
+#include "musys_libc.h"
 #include "micromod.h"
 #include "../config/config.h"
 #include "../dat/song_data.h"
@@ -75,7 +76,7 @@ static void fw_sound_crossfeed(short *soundBuffer, int count) {
 }
 
 static void fw_sound_fillSoundBuffer(short *soundBuffer) {
-    memset(_mixBuffer, 0, BUFFER_SAMPLES * NUM_CHANNELS * OVERSAMPLE * sizeof(short));
+    musys_memset(_mixBuffer, 0, BUFFER_SAMPLES * NUM_CHANNELS * OVERSAMPLE * sizeof(short));
     micromod_get_audio(_mixBuffer, BUFFER_SAMPLES * OVERSAMPLE);
     fw_sound_downsample(_mixBuffer, soundBuffer, BUFFER_SAMPLES * OVERSAMPLE);
     fw_sound_crossfeed(soundBuffer, BUFFER_SAMPLES);
@@ -133,11 +134,11 @@ void fw_sound_init() {
 #if FW_SOUND_READ_FILE_ENABLED
     char *fileBytes = fw_file_readBytes(FW_SOUND_FILE_PATH);
     if (micromod_initialise((signed char *)fileBytes, SAMPLING_FREQ * OVERSAMPLE) != 0) {
-        exit(55001);
+       ExitProcess(55001);
     }
 #else
     if (micromod_initialise((signed char *)_songData, SAMPLING_FREQ * OVERSAMPLE) != 0) {
-        exit(55001);
+        ExitProcess(55001);
     }
 #endif
 
@@ -150,7 +151,7 @@ void fw_sound_init() {
 
     // Open audio device and start passing messages to the callback thread.
     if (waveOutOpen(&_waveOutHandle, WAVE_MAPPER, &waveFormat, _threadID, 0, CALLBACK_THREAD) != MMSYSERR_NOERROR) {
-        exit(55002);
+        ExitProcess(55002);
     }
 
     for (int i=0; i<NUM_BUFFERS; i++) {
@@ -158,7 +159,7 @@ void fw_sound_init() {
 
         if (waveOutPrepareHeader(_waveOutHandle, &_waveHeaders[i], sizeof(WAVEHDR)) != MMSYSERR_NOERROR) {
             waveOutClose(_waveOutHandle);
-            exit(55003);
+            ExitProcess(55003);
         }
     }
 }

@@ -26,7 +26,7 @@
 #include "fx/anim_text.h"
 #include "fw/sync.h"
 #include "fw/broadcast.h"
-
+#include "fw/musys_libc.h"
 static fw_sync_data _syncData;
 
 static fx_anim_text_meta _presentsTextMeta1;
@@ -1390,10 +1390,10 @@ static void initIsoPattern(void) {
     const int numKeyframes = FX_ISO_PATTERN_NUM_COLS;
 
     _anims[ANIM_ISO_PATTERN_IN].numKeyframes = numKeyframes;
-    _anims[ANIM_ISO_PATTERN_IN].keyframes = calloc(numKeyframes, sizeof(fw_keyframe));
+    _anims[ANIM_ISO_PATTERN_IN].keyframes = musys_calloc(numKeyframes, sizeof(fw_keyframe));
 
     _anims[ANIM_ISO_PATTERN_OUT].numKeyframes = numKeyframes;
-    _anims[ANIM_ISO_PATTERN_OUT].keyframes = calloc(numKeyframes, sizeof(fw_keyframe));
+    _anims[ANIM_ISO_PATTERN_OUT].keyframes = musys_calloc(numKeyframes, sizeof(fw_keyframe));
 
     float delay = .7;
     for (int i=0; i<numKeyframes; i++) {
@@ -1528,16 +1528,16 @@ static void initDotTunnel3dTexts() {
 }
 
 static void initIsoLogoLineTransition(void) {
-    _isoLogoTransitionLinePositions = calloc(_numIsoLogoTransitionLinePositions, sizeof(fw_vec4f));
+    _isoLogoTransitionLinePositions = musys_calloc(_numIsoLogoTransitionLinePositions, sizeof(fw_vec4f));
 
     for (int i=0; i<_numIsoLogoTransitionLinePositions; i++) {
         _isoLogoTransitionLinePositions[i].y = -2;
     }
 
     _anims[ANIM_ISO_LOGO_TRANSITION_LINE].numKeyframes = _numIsoLogoTransitionLinePositions;
-    _anims[ANIM_ISO_LOGO_TRANSITION_LINE].keyframes = calloc(_numIsoLogoTransitionLinePositions, sizeof(fw_keyframe));
+    _anims[ANIM_ISO_LOGO_TRANSITION_LINE].keyframes = musys_calloc(_numIsoLogoTransitionLinePositions, sizeof(fw_keyframe));
 
-    srand(2);
+    musys_srand(2);
     const float startDelay = 0;
     const float keyframeDelay = .025f;
     const float duration = 2;
@@ -1637,7 +1637,7 @@ fw_keyframe createAnimTextKey(fx_anim_text_meta *meta, int keyType, int totalKey
 
 static void initPresentsTexts(void) {
     //Good: 24, 40
-    srand(40);
+    musys_srand(40);
     _presentsTextMeta1.strings = _presentsText1;
     _presentsTextMeta1.numLines = _numLinesPresentsText1;
     _presentsTextMeta1.numKeysPerChar = 4;
@@ -1651,7 +1651,7 @@ static void initPresentsTexts(void) {
     // Init color palette hack. Set x component of color to palette entry -1.
     // In `renderPresentsScene` this gets treated as fully transparent.
     for (int i=0; i<_presentsTextMeta1.numLines; i++) {
-        for (int j=0; j<strlen(_presentsTextMeta1.strings[i]); j++) {
+        for (int j=0; j<musys_strlen(_presentsTextMeta1.strings[i]); j++) {
             _presentsTextMeta1.modifiers[i][j].color.x=-1;
         }
     }
@@ -1667,7 +1667,7 @@ static void initCylinderText(fw_vec4f lineColorIndexes[], enum anim_names_enum a
 
     const int numKeys = NUM_CYLINDER_TEXT_LINES * 2; // Every line has a fade in and fade out.
     _anims[animNameEnum].numKeyframes = numKeys;
-    _anims[animNameEnum].keyframes = calloc(numKeys, sizeof(fw_keyframe));
+    _anims[animNameEnum].keyframes = musys_calloc(numKeys, sizeof(fw_keyframe));
 
     const float delay = .1f;
     const float duration = .75f;
@@ -1780,7 +1780,7 @@ static void initEndScrollerMusicSync() {
     const int pattern2Length = LEN(pattern2);
 
     _endScrollerRowNoteMapLength = 4*(pattern1Length + pattern2Length); // 4x both patterns.
-    _endScrollerRowNoteMap = calloc(_endScrollerRowNoteMapLength, sizeof(sync_row_note));
+    _endScrollerRowNoteMap = musys_calloc(_endScrollerRowNoteMapLength, sizeof(sync_row_note));
 
     // Pattern offset = 64 * n:
     // 64: full pattern length
@@ -1813,7 +1813,7 @@ void scene_0_init() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LEQUAL);
 
-    srand(1);
+    musys_srand(1);
 
     fx_dot_tunnel_init(&_dotTunnel, 96,48,.1f,.5f,.5f);
     _dotTunnelDefaultColors = _dotTunnel.dotColors;
@@ -1882,11 +1882,11 @@ static void color_white(void) {
 
 static void renderPresentsScene(fw_timer_data *time) {
     color_black();
-    fw_quad_put(0, _presentsBGPos.y + 80*sinf(time->elapsed*2), FW_RENDER_WIDTH, FW_RENDER_HEIGHT*2);
+    fw_quad_put(0, _presentsBGPos.y + 80*musys_sinf(time->elapsed*2), FW_RENDER_WIDTH, FW_RENDER_HEIGHT*2);
 
     // Palette hack: color.x denotes the palette index.
     for (int i=0; i<_presentsTextMeta1.numLines; i++) {
-        for (int j=0; j<strlen(_presentsTextMeta1.strings[i]); j++) {
+        for (int j=0; j<musys_strlen(_presentsTextMeta1.strings[i]); j++) {
             int palIdx = _presentsTextMeta1.modifiers[i][j].color.x;
             if (palIdx<0) {
                 _presentsTextMeta1.modifiers[i][j].color.w=0;
@@ -1912,7 +1912,7 @@ static void renderIsoPatternBackground(float alpha) {
 }
 
 static float calcFlickerAlpha(fw_timer_data *time) {
-    const float alpha = 95 + 4.f*sinf(64*time->elapsed) + 6.f*sinf(1.f+16*time->elapsed);
+    const float alpha = 95 + 4.f*musys_sinf(64*time->elapsed) + 6.f*musys_sinf(1.f+16*time->elapsed);
     return alpha / 255.f;
 }
 
@@ -1958,7 +1958,7 @@ static void renderTitleLogoParts(float mainBrightness, float mainAlpha) {
 
 static void renderTitleLogoPartsWithFlicker(fw_timer_data *time) {
     // Title with brightness flicker.
-    renderTitleLogoParts( (120 + 10.f*sinf(32*time->elapsed+1) + 20.f*sinf(2.f+8*time->elapsed))/255.f, 1 );
+    renderTitleLogoParts( (120 + 10.f*musys_sinf(32*time->elapsed+1) + 20.f*musys_sinf(2.f+8*time->elapsed))/255.f, 1 );
 
     // Overlay bright flicker.
     glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
@@ -2281,7 +2281,7 @@ static void renderTwirlSphere(fw_timer_data *time) {
         glScissor(0,i,FW_RENDER_WIDTH,SCISSOR_HEIGHT);
 
         glPushMatrix();
-        glRotatef(t * 120 + i*.5, sinf(.01*i+t),cosf(.01*i+t),sinf(.01*i+t));
+        glRotatef(t * 120 + i*.5, musys_sinf(.01*i+t),musys_cosf(.01*i+t),musys_sinf(.01*i+t));
         glScalef(_twirlSphereScale.x,_twirlSphereScale.y,_twirlSphereScale.z);
         fx_dot_sphere_render(&_twirlSphere, 1,1, 2 + _syncTwirlShperePointSizeAdd);
         glPopMatrix();
@@ -2646,7 +2646,7 @@ static void renderBounceSpheresQuadTransition(fw_vec3f color, float startTime, f
                 sy = h;
             } else {
                 // Else calculate scale factor depending on freq value.
-                const float cosFreq = cosf(freq);
+                const float cosFreq = musys_cosf(freq);
                 sx = w/2.f + w/2.f * cosFreq;
                 sy = h/2.f + h/2.f * cosFreq;
             }
@@ -2702,9 +2702,9 @@ static void renderBounceSphere(fw_timer_data *globalTime) {
     const float t = globalTime->elapsed;
     const float bounceFreq = .48f; // 1 row is 0.06s. Every kick is 8 * 0.06 = 0.48.
     const float bounceHeight = 3.0;
-    _bounceSphere.center.y = -.9f + bounceHeight * fabs(cosf(t * M_PI / (2 * bounceFreq) ));
+    _bounceSphere.center.y = -.9f + bounceHeight * musys_fabsf(musys_cosf(t * M_PI / (2 * bounceFreq) ));
     _bounceSphere.rotation.x = .5f;
-    _bounceSphere.rotation.y = sinf(t);
+    _bounceSphere.rotation.y = musys_sinf(t);
     _bounceSphere.rotation.z = .2f;
     _bounceSphere.rotation.w = t * 80;
     _bounceSphere.intensity = _syncBounceSphereIntensity;
@@ -2818,11 +2818,11 @@ static void renderIsoWobbler(fw_timer_data *time) {
 
     glEnable(GL_SCISSOR_TEST);
 
-    const float alpha = 50 + 4.f*sinf(64*time->elapsed) + 6.f*sinf(1.f+16*time->elapsed);
+    const float alpha = 50 + 4.f*musys_sinf(64*time->elapsed) + 6.f*musys_sinf(1.f+16*time->elapsed);
     const int scissorHeight=4;
     for (int i=0; i<FW_RENDER_HEIGHT; i+=scissorHeight) {
         glScissor(0,i,FW_RENDER_WIDTH,scissorHeight);
-        const float scaleY = 4.25f*sinf(i*.15f + 4*time->elapsed);
+        const float scaleY = 4.25f*musys_sinf(i*.15f + 4*time->elapsed);
         fw_image_renderBegin(&getImages()[RES_IMG_TITLE_BG], 1);
         glColor4ub(255,255,255,alpha);
         glTranslatef(0,scaleY,0);
@@ -3092,9 +3092,9 @@ static void renderDotTunnelText3dScene(fw_timer_data *time) {
         p = &_dotTunnelText3dAnimParams[i];
         ft = &_dotTunnelTextParams[i];
         const fw_vec4f *ip = &_dotTunnelText3dPosInits[i];
-        ft->pos.x = p->pos.x + p->sineAmp.x * sinf(p->sineOffset.x + time->elapsed * p->sineSpeed.x);
-        ft->pos.y = p->pos.y + p->sineAmp.y * sinf(p->sineOffset.y + time->elapsed * p->sineSpeed.y);
-        ft->pos.z = p->pos.z + p->sineAmp.z * sinf(p->sineOffset.z + time->elapsed * p->sineSpeed.z);
+        ft->pos.x = p->pos.x + p->sineAmp.x * musys_sinf(p->sineOffset.x + time->elapsed * p->sineSpeed.x);
+        ft->pos.y = p->pos.y + p->sineAmp.y * musys_sinf(p->sineOffset.y + time->elapsed * p->sineSpeed.y);
+        ft->pos.z = p->pos.z + p->sineAmp.z * musys_sinf(p->sineOffset.z + time->elapsed * p->sineSpeed.z);
         ft->paletteIndex = p->palIndex.x;
         if (p->pos.z > ip->z && p->pos.z < 0) {
             fx_text_3d_render(ft);
@@ -3107,7 +3107,7 @@ static void renderDotTunnelSceneSync(fw_timer_data *time) {
 }
 
 static void renderDotTunnelGradient(float width, float xoff, fw_timer_data *time) {
-    fx_overlay_renderOverlay(RES_IMG_GRADIENT_TUNNEL, 255,255,255,255, xoff, 30*sinf(time->elapsed), width,1);
+    fx_overlay_renderOverlay(RES_IMG_GRADIENT_TUNNEL, 255,255,255,255, xoff, 30*musys_sinf(time->elapsed), width,1);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glColor4ub(255,128,170,_syncDotTunnelBGFlashAlpha);
@@ -3439,11 +3439,11 @@ static void renderCylinderTwistScene(fw_timer_data *time) {
     _cylinderParams.cylinders[2].baseRadius = _cylinderTwistBaseRadius.z;
     _cylinderParams.cylinders[2].topRadius = _cylinderTwistTopRadius.z;
 
-    _cylinderParams.distance = _cylinderTwistDistance.x + _cylinderTwistDistance.y * sinf(time->elapsed * .5f);
+    _cylinderParams.distance = _cylinderTwistDistance.x + _cylinderTwistDistance.y * musys_sinf(time->elapsed * .5f);
 
-    _cylinderParams.cylinders[0].yDelta = -2.f  + _cylinderTwistYSineAmp.x * sinf(time->elapsed)          + _cylinderYDeltas.x;
-    _cylinderParams.cylinders[1].yDelta = -2.f  + _cylinderTwistYSineAmp.y * sinf(1.5f+time->elapsed*.5f) + _cylinderYDeltas.y;
-    _cylinderParams.cylinders[2].yDelta = -2.5f + _cylinderTwistYSineAmp.z * sinf(2.5f+time->elapsed*0.9) + _cylinderYDeltas.z;
+    _cylinderParams.cylinders[0].yDelta = -2.f  + _cylinderTwistYSineAmp.x * musys_sinf(time->elapsed)          + _cylinderYDeltas.x;
+    _cylinderParams.cylinders[1].yDelta = -2.f  + _cylinderTwistYSineAmp.y * musys_sinf(1.5f+time->elapsed*.5f) + _cylinderYDeltas.y;
+    _cylinderParams.cylinders[2].yDelta = -2.5f + _cylinderTwistYSineAmp.z * musys_sinf(2.5f+time->elapsed*0.9) + _cylinderYDeltas.z;
 
     fx_cylinder_twist_render(&_cylinderParams, time);
 }
@@ -3478,7 +3478,7 @@ static void renderEndBlinds(float delay, unsigned char r,unsigned char g,unsigne
             sy = 1;
         } else {
             // Else calculate scale factor depending on freq value.
-            sy = .5f + 0.49f*cosf(freq);
+            sy = .5f + 0.49f*musys_cosf(freq);
         }
 
         glPushMatrix();
@@ -3564,7 +3564,7 @@ static void renderEndScrollerScene(fw_timer_data *time) {
         glPushMatrix();
         fw_font_renderTextBegin(getFontFace());
         glColor4ub(0,0,0, 120);
-        glTranslatef(xOff + 4*sinf(time->elapsed*1), yOff-time->elapsed*speed + 3*sinf(1+time->elapsed*.7),0);
+        glTranslatef(xOff + 4*musys_sinf(time->elapsed*1), yOff-time->elapsed*speed + 3*musys_sinf(1+time->elapsed*.7),0);
         glScalef(.5,.5,1);
         fw_font_renderText(_endScrollerText, _numLinesEndScrollerText, getFontFace(), 0,0, 1);
         fw_font_renderTextEnd();

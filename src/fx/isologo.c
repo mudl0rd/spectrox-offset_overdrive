@@ -4,6 +4,7 @@
 #include "../fw/types.h"
 #include "../fw/math.h"
 #include "../fw/easing.h"
+#include "../fw/musys_libc.h"
 #include "../resource.h"
 
 
@@ -141,11 +142,11 @@ void fx_isologo_render(char isMirrored, float p, FxIsoLogoYTypeEnum src, FxIsoLo
 void fx_isologo_renderPatternUpdate(fx_isologo_render_meta *meta, fw_timer_data *time) {
 
     // Bring x coordinate in range.
-    const float xoff = fmodf(meta->x, 27 * _numPatternCols);
+    const float xoff = musys_fmodf(meta->x, 27 * _numPatternCols);
 
     for (int i=0; i<_numPatternCols; i++) {
         _patternCols[i].x = xoff + i*27;
-        _patternCols[i].y = meta->offsets[i].y + meta->amp*sinf((i/(float)_numPatternCols)*_pi2 + time->elapsed*4.f);
+        _patternCols[i].y = meta->offsets[i].y + meta->amp*musys_sinf((i/(float)_numPatternCols)*_pi2 + time->elapsed*4.f);
         if (_patternCols[i].x < -28) {
             _patternCols[i].x += 27 * _numPatternCols;
         }
@@ -161,7 +162,7 @@ void fx_isologo_renderPattern(fx_isologo_render_meta *meta) {
         glPushMatrix();
         {
             float y = _patternCols[i].y - meta->offsets[i].y;
-            y = 1.f-fabs(y/(40.f * 1.1));
+            y = 1.f-musys_fabsf(y/(40.f * 1.1));
             y = fw_math_clamp(y, 0,1);
             y = QuadraticEaseOut(y);
             //y = ((int)(.5+y*32.f))/32.f;

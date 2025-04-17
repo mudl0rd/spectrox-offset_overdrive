@@ -5,6 +5,7 @@
 #include "../resource.h"
 #include "../fw/quad.h"
 #include "../fw/projection.h"
+#include "../fw/musys_libc.h"
 
 #define FX_LOVE_TEXT_DELAY_SECONDS 12
 #define FX_LOVE_RAINBOW_DELAY_SECONDS -12
@@ -72,35 +73,35 @@ void fx_love_renderTexts(float xoff, float time) {
 
     if (fadeIdxs[0]>=0) {
         glPushMatrix();
-        glTranslatef(20*sinf(time*2),10*sinf(1+time),1);
+        glTranslatef(20*musys_sinf(time*2),10*musys_sinf(1+time),1);
         fx_love_renderText(_texts[0],145,0,_fadePaletteMap[fadeIdxs[0]]);
         glPopMatrix();
     }
 
     if (fadeIdxs[1]>=0) {
         glPushMatrix();
-        glTranslatef(20*sinf(2+time),10*sinf(1.3+time*1),1);
+        glTranslatef(20*musys_sinf(2+time),10*musys_sinf(1.3+time*1),1);
         fx_love_renderText(_texts[1],152,30,_fadePaletteMap[fadeIdxs[1]]);
         glPopMatrix();
     }
 
     if (fadeIdxs[2]>=0) {
         glPushMatrix();
-        glTranslatef(30*sinf(1+time),10*sinf(1.6+time*1),1);
+        glTranslatef(30*musys_sinf(1+time),10*musys_sinf(1.6+time*1),1);
         fx_love_renderText(_texts[2],125,60,_fadePaletteMap[fadeIdxs[2]]);
         glPopMatrix();
     }
 
     if (fadeIdxs[3]>=0) {
         glPushMatrix();
-        glTranslatef(10*sinf(3+time*2),10*sinf(1.9+time*1),1);
+        glTranslatef(10*musys_sinf(3+time*2),10*musys_sinf(1.9+time*1),1);
         fx_love_renderText(_texts[3],138,90,_fadePaletteMap[fadeIdxs[3]]);
         glPopMatrix();
     }
 
     if (fadeIdxs[4]>=0) {
         glPushMatrix();
-        glTranslatef(20*sinf(2+time*1),10*sinf(2.1+time*1),1);
+        glTranslatef(20*musys_sinf(2+time*1),10*musys_sinf(2.1+time*1),1);
         fx_love_renderText(_texts[4],160,120,_fadePaletteMap[fadeIdxs[4]]);
         glPopMatrix();
     }
@@ -120,8 +121,8 @@ void fx_love_renderBG(float xoff, float time) {
     const float t1 = time + FX_LOVE_RAINBOW_DELAY_SECONDS; // Time modifizierten damit die gewünschte Phase im Gesamtablauf passt.
     for (int i=0; i<FW_RENDER_HEIGHT; i+=scissorHeight) {
         glScissor(0,i,FW_RENDER_WIDTH,scissorHeight);
-        const float f1 = sinf(i*.01 + t1*2);
-        const float f2 = sinf(i*.005 + t1*1.5);
+        const float f1 = musys_sinf(i*.01 + t1*2);
+        const float f2 = musys_sinf(i*.005 + t1*1.5);
 
         glPushMatrix();
         glTranslatef(xoff,0,0);
